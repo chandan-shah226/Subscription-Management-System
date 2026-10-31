@@ -134,8 +134,6 @@ class AuthManager {
             navLinks += `<a href="#/finance" class="nav-link" data-route="/finance">Finance Hub</a>`;
             navLinks += `<a href="#/users" class="nav-link" data-route="/users">Users</a>`;
         }
-            navLinks += `<a href="#/users" class="nav-link" data-route="/users">Users</a>`;
-        }
 
         navContainer.innerHTML = navLinks;
 
