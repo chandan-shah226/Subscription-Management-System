@@ -99,7 +99,7 @@ class AuthManager {
     /**
      * Dynamically updates the top navigation bar according to the active role.
      */
-    static updateNavbar() {
+    static updateNavbar(overrideRoute = null) {
         const navContainer = document.getElementById('app-navigation');
         const userMenu = document.getElementById('user-menu');
         if (!navContainer || !userMenu) return;
@@ -116,31 +116,24 @@ class AuthManager {
         }
 
         const user = this.currentUser;
-        let navLinks = '';
+        let navLinks = `
+            <a href="#/dashboard" class="nav-link" data-route="/dashboard">Dashboard</a>
+            <a href="#/products" class="nav-link" data-route="/products">Products & Plans</a>
+            <a href="#/quotations" class="nav-link" data-route="/quotations">Quotations</a>
+            <a href="#/subscriptions" class="nav-link" data-route="/subscriptions">Subscriptions</a>
+            <a href="#/invoices" class="nav-link" data-route="/invoices">Invoices</a>
+        `;
 
-        if (this.isCustomer()) {
-            navLinks = `
-                <a href="#/dashboard" class="nav-link" data-route="/dashboard">My Portal</a>
-                <a href="#/products" class="nav-link" data-route="/products">Catalog</a>
-                <a href="#/quotations" class="nav-link" data-route="/quotations">My Quotes</a>
-                <a href="#/subscriptions" class="nav-link" data-route="/subscriptions">My Subscriptions</a>
-                <a href="#/invoices" class="nav-link" data-route="/invoices">My Invoices & Pay</a>
-            `;
-        } else {
-            navLinks = `
-                <a href="#/dashboard" class="nav-link" data-route="/dashboard">Dashboard</a>
-                <a href="#/products" class="nav-link" data-route="/products">Catalog</a>
-                <a href="#/quotations" class="nav-link" data-route="/quotations">Quotes</a>
-                <a href="#/subscriptions" class="nav-link" data-route="/subscriptions">Subscriptions</a>
-                <a href="#/invoices" class="nav-link" data-route="/invoices">Invoices</a>
-                <a href="#/payments" class="nav-link" data-route="/payments">Payments</a>
-            `;
+        if (this.isAdmin()) {
+            navLinks += `<a href="#/discounts" class="nav-link" data-route="/discounts">Discounts</a>`;
+        }
 
-            if (this.isAdmin()) {
-                navLinks += `<a href="#/discounts" class="nav-link" data-route="/discounts">Discounts</a>`;
-            }
+        navLinks += `<a href="#/payments" class="nav-link" data-route="/payments">Payments</a>`;
 
+        if (this.isAdmin() || this.isStaff()) {
             navLinks += `<a href="#/finance" class="nav-link" data-route="/finance">Finance Hub</a>`;
+            navLinks += `<a href="#/users" class="nav-link" data-route="/users">Users</a>`;
+        }
             navLinks += `<a href="#/users" class="nav-link" data-route="/users">Users</a>`;
         }
 
@@ -155,8 +148,12 @@ class AuthManager {
             <button id="logout-btn" class="btn btn-secondary btn-sm" onclick="AuthManager.logout()">Logout</button>
         `;
 
-        // Highlight active link
-        const currentRoute = window.location.hash.slice(1) || '/dashboard';
+        // Highlight active link accurately
+        const currentHash = window.location.hash.slice(1) || '/dashboard';
+        const rawRoute = overrideRoute || currentHash;
+        const currentRoute = rawRoute.split('?')[0];
+
+        navContainer.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
         const activeLink = navContainer.querySelector(`[data-route="${currentRoute}"]`);
         if (activeLink) {
             activeLink.classList.add('active');
@@ -166,4 +163,3 @@ class AuthManager {
 
 // Attach to window
 window.AuthManager = AuthManager;
-

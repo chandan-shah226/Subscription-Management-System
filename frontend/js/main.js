@@ -44,7 +44,7 @@ async function checkBackendConnectivity() {
 
     try {
         const res = await ApiClient.get('/health');
-        if (res.status === 200 || res.success) {
+        if (res && (res.status === 200 || res.success || res.status === 'healthy' || res.data?.status === 'healthy')) {
             statusEl.textContent = 'Backend Online (v1.0.0)';
             statusEl.className = 'status-indicator online';
         } else {

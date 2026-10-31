@@ -17,11 +17,13 @@ from models.plan import SubscriptionPlan, PlanProduct
 from models.quotation import Quotation, QuotationItem
 from models.subscription import Subscription, SubscriptionItem, SubscriptionAuditLog
 from models.invoice import Invoice, InvoiceItem
-from models.payment import Payment
-from models.discount import Discount
+from models.payment import Payment, PaymentWebhookEvent
+from models.discount import Discount, DiscountProduct, DiscountRedemption
 
-# Alias User as Customer for finance queries
+# Compatibility aliases
 Customer = User
+Plan = SubscriptionPlan
+SubscriptionLine = SubscriptionItem
 
 __all__ = [
     "db",
@@ -41,5 +43,9 @@ __all__ = [
     "Invoice",
     "InvoiceItem",
     "Payment",
+    "Customer",
+    "PaymentWebhookEvent",
     "Discount",
+    "DiscountProduct",
+    "DiscountRedemption",
 ]

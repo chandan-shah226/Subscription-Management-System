@@ -27,13 +27,19 @@ class Config:
 
     # Flask-JWT-Extended Configuration
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-jwt-secret-key-brightloop-subscription-system-2026-safe-32-bytes")
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=2)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
     # Pagination & Cache Configuration
     DEFAULT_PER_PAGE = 20
     MAX_PER_PAGE = 100
     CACHE_TTL_SECONDS = 60
+
+    # Razorpay Payment Gateway Configuration (Module 6: Test Mode)
+    RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "rzp_test_placeholder_key")
+    RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "placeholder_secret")
+    RAZORPAY_WEBHOOK_SECRET = os.environ.get("RAZORPAY_WEBHOOK_SECRET", "placeholder_webhook_secret")
+    RAZORPAY_MODE = os.environ.get("RAZORPAY_MODE", "test")
 
 
 class DevelopmentConfig(Config):
@@ -45,6 +51,10 @@ class TestingConfig(Config):
     """Configuration for automated test suites."""
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    RAZORPAY_KEY_ID = "rzp_test_testkey123"
+    RAZORPAY_KEY_SECRET = "testsecret1234567890"
+    RAZORPAY_WEBHOOK_SECRET = "testwebhooksecret123"
+    RAZORPAY_MODE = "test"
 
 
 class ProductionConfig(Config):
@@ -60,4 +70,3 @@ config_by_name = {
     "production": ProductionConfig,
     "default": DevelopmentConfig,
 }
-

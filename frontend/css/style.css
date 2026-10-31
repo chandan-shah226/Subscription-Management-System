@@ -6,13 +6,13 @@
  */
 
 :root {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --primary-light: #eff6ff;
+    --primary: #714B67;
+    --primary-hover: #593b51;
+    --primary-light: #f5f0f3;
     --secondary: #64748b;
     --secondary-hover: #475569;
-    --background: #f8fafc;
-    --surface: #ffffff;
+    --background: #F8F9FA;
+    --surface: #FFFFFF;
     --surface-hover: #f1f5f9;
     --border: #e2e8f0;
     --border-dark: #cbd5e1;
@@ -908,7 +908,9 @@ a:hover {
     margin: 0 auto;
 }
 
-/* ==========================================================================
+
+/* 
+===================================================================
    Module 4, 5, 6, 7 & 8: Invoicing, Payments, Discounts & Finance Styles
    ========================================================================== */
 
@@ -1195,4 +1197,113 @@ a:hover {
     .no-print {
         display: none !important;
     }
+=======
+
+/* ========================================================
+   Module 4: Invoicing, KPI Grid, & Search Width Enhancements
+   ======================================================== */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.kpi-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 0.35rem;
+}
+
+.kpi-subtext {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Fix search bar text clipping */
+.toolbar-search, #inv-search, #sub-search, #quote-search {
+    min-width: 260px !important;
+    width: 100% !important;
+    max-width: 480px;
+    height: 42px;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.toolbar-search:focus, #inv-search:focus, #sub-search:focus, #quote-search:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.15);
+}
+
+/* Status Badges */
+.badge-draft { background: #f1f5f9; color: #475569; }
+.badge-confirmed { background: #e0f2fe; color: #0369a1; }
+.badge-paid { background: #dcfce7; color: #15803d; }
+.badge-overdue { background: #fee2e2; color: #b91c1c; }
+.badge-cancelled { background: #fef2f2; color: #991b1b; }
+
+/* Table horizontal containment */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table th {
+    white-space: nowrap;
+}
+
+/* ========================================================
+   Modules 5 & 6: Discounts & Payment Ledger Styles
+   ======================================================== */
+#disc-search, #pay-search {
+    min-width: 260px !important;
+    width: 100% !important;
+    max-width: 480px;
+    height: 42px;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+#disc-search:focus, #pay-search:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(113, 75, 103, 0.15);
+}
+
+.kpi-card .kpi-subtext {
+    margin-top: auto;
+
 }

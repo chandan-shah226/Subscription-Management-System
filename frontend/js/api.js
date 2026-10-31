@@ -5,11 +5,11 @@
  * error handling, and redirection on unauthenticated requests.
  */
 
-// Dynamically detect API host: prefer port 5001 (macOS AirPlay avoids 5000) or current host
-let API_BASE_URL = window.API_BASE_URL ||
-    (window.location.port === '5001' || window.location.port === '5000'
-        ? `${window.location.origin}/api`
-        : 'http://127.0.0.1:5001/api');
+
+// Dynamically use current host if available, else default to 127.0.0.1
+const currentHost = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '127.0.0.1';
+let API_BASE_URL = `http://${currentHost}:5000/api`;
+
 
 class ApiClient {
     /**
@@ -109,10 +109,12 @@ class ApiClient {
                 };
             }
 
+            const payload = typeof data === 'object' && data !== null ? data : {};
             return {
                 success: true,
-                data: data.data !== undefined ? data.data : data,
-                message: data.message || '',
+                ...payload,
+                data: payload.data !== undefined ? payload.data : payload,
+                message: payload.message || '',
                 status: response.status
             };
 
