@@ -3,48 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscription Management System</title>
+    <title>Subscription Management System — Brightloop Software</title>
     <!-- Core Application Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Top Navigation / Application Header -->
+    <!-- Top Application Navigation Header -->
     <header class="app-header">
         <div class="header-container">
-            <h1 class="logo">Subscription Manager</h1>
-            <nav class="nav-placeholder">
-                <!-- Navigation links will be added here as features are developed -->
-                <span class="badge">Development Skeleton</span>
+            <div class="brand-section">
+                <a href="#/dashboard" class="logo">Brightloop <span>Subscriptions</span></a>
+                <span id="api-status" class="status-indicator">Checking API...</span>
+            </div>
+            
+            <!-- Dynamic Navigation Links (Updated based on role) -->
+            <nav id="app-navigation" class="app-nav">
+                <!-- Injected dynamically by AuthManager -->
             </nav>
+
+            <!-- User Menu / Auth Controls -->
+            <div id="user-menu" class="user-menu">
+                <!-- Injected dynamically by AuthManager -->
+            </div>
         </div>
     </header>
 
-    <!-- Main Content Container: Placeholder for views (Dashboard, Products, Plans, Invoices, etc.) -->
+    <!-- Main Dynamic Application Container -->
     <main id="app" class="main-content">
-        <section class="welcome-card">
-            <h2>Subscription Management System</h2>
-            <p>Welcome to the project skeleton. The frontend is built using standard HTML5, CSS3, and Vanilla JavaScript.</p>
-            
-            <!-- API Connectivity Status Indicator -->
-            <div class="api-status-box">
-                <strong>API Status:</strong>
-                <span id="api-status" class="status-indicator">Checking connection...</span>
-            </div>
-        </section>
-
-        <!-- Placeholder section ready for modular frontend views -->
-        <section id="view-container" class="view-container">
-            <!-- Feature-specific UI components will be rendered here dynamically or statically -->
-        </section>
+        <div id="view-container" class="view-container">
+            <!-- Active view rendered here by Router -->
+        </div>
     </main>
 
     <!-- Application Footer -->
     <footer class="app-footer">
-        <p>&copy; 2026 Subscription Management System. Initial Project Skeleton.</p>
+        <div class="footer-container">
+            <p>&copy; 2026 Brightloop Software — Subscription Management System (Modules 1, 2 & 3).</p>
+            <p class="text-xs text-muted">Flask • SQLite • SQLAlchemy • Flask-JWT-Extended • Vanilla JS</p>
+        </div>
     </footer>
 
-    <!-- Core Application Logic (Vanilla JavaScript) -->
+    <!-- Vanilla JavaScript Application Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/views/authView.js"></script>
+    <script src="js/views/dashboardView.js"></script>
+    <script src="js/views/userView.js"></script>
+    <script src="js/views/productPlanView.js"></script>
+    <script src="js/views/quotationView.js"></script>
+    <script src="js/views/subscriptionView.js"></script>
+    <script src="js/router.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
-

@@ -1,12 +1,23 @@
 """
 Middleware Package
 ==================
-Provides request/response hooks, authentication/authorization guards,
-custom decorators, and error handlers.
-
-Developers can add cross-cutting concerns (e.g., role-based access decorators,
-request logging, standardized error handling) here.
+Exports authentication, authorization, role guards, and response helpers.
 """
 
-# Placeholder for middleware components and decorators
+from middleware.auth import (
+    api_response,
+    api_error,
+    get_current_user,
+    roles_required,
+    permission_required,
+    prevent_customer_idor,
+)
 
+__all__ = [
+    "api_response",
+    "api_error",
+    "get_current_user",
+    "roles_required",
+    "permission_required",
+    "prevent_customer_idor",
+]
