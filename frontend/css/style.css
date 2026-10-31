@@ -1,0 +1,144 @@
+/*
+ * Subscription Management System - Base Stylesheet
+ * =================================================
+ * Pure Vanilla CSS providing the layout and base component styling.
+ * Independent frontend developers can extend variables and component blocks.
+ */
+
+/* --- CSS Variables & Theme Configuration --- */
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --background-color: #f8fafc;
+    --surface-color: #ffffff;
+    --text-color: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --status-pending: #f59e0b;
+    --status-success: #10b981;
+    --status-error: #ef4444;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* --- Base & Reset --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- Header Styles --- */
+.app-header {
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.badge {
+    background-color: #e0e7ff;
+    color: #4338ca;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* --- Main Layout & Card Containers --- */
+.main-content {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.welcome-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+}
+
+.welcome-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
+
+.welcome-card p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* --- Status Box Component --- */
+.api-status-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+}
+
+.status-indicator {
+    color: var(--status-pending);
+    font-weight: 600;
+}
+
+.status-indicator.online {
+    color: var(--status-success);
+}
+
+.status-indicator.offline {
+    color: var(--status-error);
+}
+
+/* --- Modular View Container Placeholder --- */
+.view-container {
+    /* Reserved for dynamic views (auth forms, subscription lists, invoices, etc.) */
+    min-height: 200px;
+}
+
+/* --- Footer Styles --- */
+.app-footer {
+    background-color: var(--surface-color);
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    padding: 1.25rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+

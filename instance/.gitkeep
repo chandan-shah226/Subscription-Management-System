@@ -1,0 +1,2 @@
+# Keep the instance directory tracked in git while keeping database files ignored.
+
