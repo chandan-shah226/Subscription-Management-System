@@ -13,9 +13,13 @@ from flask_cors import CORS
 from config import config_by_name
 from models import (
     db, User, Product, ProductVariant, SubscriptionPlan, PlanProduct,
-    Quotation, QuotationItem, Subscription, SubscriptionItem, SubscriptionAuditLog
+    Quotation, QuotationItem, Subscription, SubscriptionItem, SubscriptionAuditLog,
+    Invoice, InvoiceItem, Payment, Discount
 )
-from routes import auth_bp, user_bp, product_bp, plan_bp, quotation_bp, subscription_bp
+from routes import (
+    auth_bp, user_bp, product_bp, plan_bp, quotation_bp, subscription_bp,
+    invoice_bp, payment_bp, discount_bp, finance_bp
+)
 
 
 def seed_initial_data(app):
@@ -137,6 +141,162 @@ def seed_initial_data(app):
                 is_active=True
             )
             db.session.add_all([plan1, plan2])
+            db.session.flush()
+
+        # Seed Sample Discounts
+        if not Discount.query.first():
+            from decimal import Decimal
+            from datetime import date, timedelta
+            d1 = Discount(
+                name="Welcome New Customer (10% Off)",
+                code="WELCOME10",
+                discount_type="percentage",
+                value=Decimal("10.00"),
+                min_amount=Decimal("100.00"),
+                start_date=date.today() - timedelta(days=30),
+                end_date=date.today() + timedelta(days=365),
+                max_uses=100,
+                used_count=3,
+                scope="subscription",
+                is_active=True
+            )
+            d2 = Discount(
+                name="Volume Discount (5+ Seats)",
+                code="VOLUME5",
+                discount_type="fixed",
+                value=Decimal("200.00"),
+                min_quantity=5,
+                start_date=date.today() - timedelta(days=10),
+                end_date=date.today() + timedelta(days=180),
+                max_uses=50,
+                used_count=1,
+                scope="subscription",
+                is_active=True
+            )
+            d3 = Discount(
+                name="Annual Early Bird Commit (15% Off)",
+                code="ANNUAL15",
+                discount_type="percentage",
+                value=Decimal("15.00"),
+                min_amount=Decimal("1000.00"),
+                start_date=date.today() - timedelta(days=60),
+                end_date=date.today() + timedelta(days=300),
+                max_uses=30,
+                used_count=5,
+                scope="subscription",
+                is_active=True
+            )
+            db.session.add_all([d1, d2, d3])
+
+        # Seed Sample Subscription if absent
+        cust_user = User.query.filter_by(email="customer@brightloop.com").first()
+        plan_monthly = SubscriptionPlan.query.filter_by(code="PLAN-ENT-MONTHLY").first()
+        prod1 = Product.query.first()
+        if cust_user and plan_monthly and prod1 and not Subscription.query.first():
+            from decimal import Decimal
+            from datetime import date, timedelta
+            today = date.today()
+            sub1 = Subscription(
+                subscription_number="SUB-2026-0001",
+                customer_id=cust_user.id,
+                plan_id=plan_monthly.id,
+                status="active",
+                billing_frequency="monthly",
+                start_date=today - timedelta(days=60),
+                next_billing_date=today + timedelta(days=30),
+                subtotal=Decimal("1500.00"),
+                tax_amount=Decimal("270.00"),
+                total_amount=Decimal("1770.00"),
+                amount=Decimal("1770.00"),
+                plan_name=plan_monthly.name,
+                product_name=prod1.name,
+                renews_on=today + timedelta(days=30)
+            )
+            db.session.add(sub1)
+            db.session.flush()
+
+            # Add line item
+            si1 = SubscriptionItem(
+                subscription_id=sub1.id,
+                product_id=prod1.id,
+                quantity=1,
+                unit_price=Decimal("1500.00"),
+                tax_rate=Decimal("18.00"),
+                total_price=Decimal("1770.00")
+            )
+            db.session.add(si1)
+
+            # Seed an invoice that is paid
+            inv1 = Invoice(
+                invoice_number="INV-2026-0001",
+                subscription_id=sub1.id,
+                customer_id=cust_user.id,
+                invoice_date=today - timedelta(days=60),
+                due_date=today - timedelta(days=45),
+                status="paid",
+                subtotal=Decimal("1500.00"),
+                tax_amount=Decimal("270.00"),
+                discount_amount=Decimal("0.00"),
+                total_amount=Decimal("1770.00"),
+                amount=Decimal("1770.00"),
+                notes="Initial monthly billing for SaaS Enterprise"
+            )
+            db.session.add(inv1)
+            db.session.flush()
+
+            inv_item1 = InvoiceItem(
+                invoice_id=inv1.id,
+                product_id=prod1.id,
+                description=prod1.name,
+                quantity=1,
+                unit_price=Decimal("1500.00"),
+                tax_rate=Decimal("18.00"),
+                total_price=Decimal("1770.00")
+            )
+            db.session.add(inv_item1)
+
+            # Seed payment for inv1
+            pay1 = Payment(
+                payment_reference="PAY-2026-0001",
+                invoice_id=inv1.id,
+                customer_id=cust_user.id,
+                amount=Decimal("1770.00"),
+                method="card",
+                status="successful",
+                paid_on=today - timedelta(days=59),
+                note="Card payment processed successfully"
+            )
+            db.session.add(pay1)
+
+            # Seed a current confirmed invoice
+            inv2 = Invoice(
+                invoice_number="INV-2026-0002",
+                subscription_id=sub1.id,
+                customer_id=cust_user.id,
+                invoice_date=today - timedelta(days=30),
+                due_date=today + timedelta(days=5),
+                status="confirmed",
+                subtotal=Decimal("1500.00"),
+                tax_amount=Decimal("270.00"),
+                discount_amount=Decimal("150.00"),
+                total_amount=Decimal("1620.00"),
+                amount=Decimal("1620.00"),
+                discount_code="WELCOME10",
+                notes="Recurring monthly invoice with WELCOME10 coupon"
+            )
+            db.session.add(inv2)
+            db.session.flush()
+
+            inv_item2 = InvoiceItem(
+                invoice_id=inv2.id,
+                product_id=prod1.id,
+                description=prod1.name,
+                quantity=1,
+                unit_price=Decimal("1500.00"),
+                tax_rate=Decimal("18.00"),
+                total_price=Decimal("1770.00")
+            )
+            db.session.add(inv_item2)
 
         db.session.commit()
 
@@ -209,6 +369,10 @@ def create_app(config_name=None):
     app.register_blueprint(plan_bp)
     app.register_blueprint(quotation_bp)
     app.register_blueprint(subscription_bp)
+    app.register_blueprint(invoice_bp)
+    app.register_blueprint(payment_bp)
+    app.register_blueprint(discount_bp)
+    app.register_blueprint(finance_bp)
 
     return app
 
@@ -216,4 +380,6 @@ def create_app(config_name=None):
 if __name__ == "__main__":
     app = create_app()
     seed_initial_data(app)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5001))
+    print(f"🚀 Brightloop Backend Server starting on port {port}...")
+    app.run(host="0.0.0.0", port=port, debug=True)

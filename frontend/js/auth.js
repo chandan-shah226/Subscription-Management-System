@@ -116,14 +116,31 @@ class AuthManager {
         }
 
         const user = this.currentUser;
-        let navLinks = `
-            <a href="#/dashboard" class="nav-link" data-route="/dashboard">Dashboard</a>
-            <a href="#/products" class="nav-link" data-route="/products">Products & Plans</a>
-            <a href="#/quotations" class="nav-link" data-route="/quotations">Quotations</a>
-            <a href="#/subscriptions" class="nav-link" data-route="/subscriptions">Subscriptions</a>
-        `;
+        let navLinks = '';
 
-        if (this.isAdmin() || this.isStaff()) {
+        if (this.isCustomer()) {
+            navLinks = `
+                <a href="#/dashboard" class="nav-link" data-route="/dashboard">My Portal</a>
+                <a href="#/products" class="nav-link" data-route="/products">Catalog</a>
+                <a href="#/quotations" class="nav-link" data-route="/quotations">My Quotes</a>
+                <a href="#/subscriptions" class="nav-link" data-route="/subscriptions">My Subscriptions</a>
+                <a href="#/invoices" class="nav-link" data-route="/invoices">My Invoices & Pay</a>
+            `;
+        } else {
+            navLinks = `
+                <a href="#/dashboard" class="nav-link" data-route="/dashboard">Dashboard</a>
+                <a href="#/products" class="nav-link" data-route="/products">Catalog</a>
+                <a href="#/quotations" class="nav-link" data-route="/quotations">Quotes</a>
+                <a href="#/subscriptions" class="nav-link" data-route="/subscriptions">Subscriptions</a>
+                <a href="#/invoices" class="nav-link" data-route="/invoices">Invoices</a>
+                <a href="#/payments" class="nav-link" data-route="/payments">Payments</a>
+            `;
+
+            if (this.isAdmin()) {
+                navLinks += `<a href="#/discounts" class="nav-link" data-route="/discounts">Discounts</a>`;
+            }
+
+            navLinks += `<a href="#/finance" class="nav-link" data-route="/finance">Finance Hub</a>`;
             navLinks += `<a href="#/users" class="nav-link" data-route="/users">Users</a>`;
         }
 

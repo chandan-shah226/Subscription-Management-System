@@ -107,6 +107,9 @@ const QuotationView = {
                             </td>
                             <td>
                                 <button class="btn btn-sm btn-secondary" onclick="QuotationView.openDetailsModal(${q.id})">Details &rarr;</button>
+                                ${q.status === 'confirmed' && !q.has_converted_subscription && !AuthManager.isCustomer() ? `
+                                    <button class="btn btn-sm btn-primary" onclick="QuotationView.convertToSubscription(${q.id})">⚡ Convert</button>
+                                ` : ''}
                             </td>
                         </tr>
                     `).join('')}

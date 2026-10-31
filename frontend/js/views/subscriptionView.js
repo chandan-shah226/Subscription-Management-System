@@ -200,6 +200,9 @@ const SubscriptionView = {
                             <h4>Subscription Lifecycle Controls</h4>
                             <div class="d-flex gap-2 flex-wrap mt-2">
                                 ${s.status === 'active' ? `
+                                    <button class="btn btn-outline" onclick="SubscriptionView.generateInvoiceForSub(${s.id})">
+                                        ⚡ Generate Invoice
+                                    </button>
                                     <button class="btn btn-warning" onclick="SubscriptionView.pauseSub(${s.id})" ${!s.allow_pause ? 'disabled title="Plan policy forbids pause"' : ''}>
                                         ⏸️ Pause Subscription
                                     </button>
@@ -250,6 +253,17 @@ const SubscriptionView = {
                 </div>
             </div>
         `;
+    },
+
+    generateInvoiceForSub: async (subId) => {
+        const res = await ApiClient.post(`/invoices/generate/${subId}`, {});
+        if (res.success) {
+            window.showToast(`Invoice ${res.data.invoice_number} created successfully!`, 'success');
+            SubscriptionView.closeModal();
+            window.Router.navigate('/invoices');
+        } else {
+            window.showToast(res.error || 'Failed to generate invoice', 'error');
+        }
     },
 
     pauseSub: async (subId) => {

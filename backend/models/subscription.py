@@ -31,6 +31,10 @@ class Subscription(db.Model):
     subtotal = db.Column(db.Numeric(12, 2), nullable=False, default=Decimal("0.00"))
     tax_amount = db.Column(db.Numeric(12, 2), nullable=False, default=Decimal("0.00"))
     total_amount = db.Column(db.Numeric(12, 2), nullable=False, default=Decimal("0.00"))
+    amount = db.Column(db.Numeric(12, 2), nullable=False, default=Decimal("0.00"))
+    plan_name = db.Column(db.String(120), nullable=True)
+    product_name = db.Column(db.String(120), nullable=True)
+    renews_on = db.Column(db.Date, nullable=True)
 
     paused_at = db.Column(db.DateTime, nullable=True)
     closed_at = db.Column(db.DateTime, nullable=True)

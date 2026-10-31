@@ -19,7 +19,11 @@ class Router {
             return res;
         }, public: false },
         '/quotations': { render: () => QuotationView.render(), public: false },
-        '/subscriptions': { render: () => SubscriptionView.render(), public: false }
+        '/subscriptions': { render: () => SubscriptionView.render(), public: false },
+        '/invoices': { render: () => InvoiceView.render(), public: false },
+        '/payments': { render: () => PaymentView.render(), public: false },
+        '/discounts': { render: () => DiscountView.render(), public: false, adminOnly: true },
+        '/finance': { render: () => FinanceView.render(), public: false, staffOnly: true }
     };
 
     static init() {
@@ -49,6 +53,13 @@ class Router {
                 window.location.hash = '/login';
                 return;
             }
+        }
+
+        // Admin only guard
+        if (route && route.adminOnly && !AuthManager.isAdmin()) {
+            window.showToast('Access forbidden: Administrator privileges required.', 'error');
+            window.location.hash = '/dashboard';
+            return;
         }
 
         // Staff / Admin guard

@@ -907,3 +907,292 @@ a:hover {
     max-width: 1300px;
     margin: 0 auto;
 }
+
+/* ==========================================================================
+   Module 4, 5, 6, 7 & 8: Invoicing, Payments, Discounts & Finance Styles
+   ========================================================================== */
+
+/* Action buttons cell */
+.action-buttons-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+/* Overdue highlights */
+.overdue-row-highlight {
+    background-color: #fff5f5 !important;
+}
+
+/* Modal Overlay & Responsive Cards */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.modal-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-md {
+    max-width: 580px;
+}
+
+.modal-xl {
+    max-width: 950px;
+}
+
+.printable-invoice-card {
+    max-width: 850px;
+}
+
+.modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Printable Tax Invoice Styles */
+.printable-invoice-body {
+    padding: 2.25rem 2rem;
+    color: #1e293b;
+    background: #ffffff;
+}
+
+.invoice-header-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.invoice-brand-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--primary, #6366f1);
+    margin: 0 0 0.25rem 0;
+}
+
+.invoice-brand-title span {
+    color: #0f172a;
+}
+
+.invoice-title {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+    text-align: right;
+}
+
+.invoice-meta-right {
+    text-align: right;
+}
+
+.invoice-meta-row {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.invoice-divider {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin: 1.5rem 0;
+}
+
+.invoice-parties-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.section-subtitle {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.customer-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 0.2rem 0;
+    color: #0f172a;
+}
+
+.customer-email {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.invoice-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.invoice-items-table th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    padding: 0.85rem 1rem;
+    border-bottom: 2px solid #cbd5e1;
+}
+
+.invoice-items-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.9rem;
+}
+
+.invoice-totals-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.invoice-notes-area {
+    background: #f8fafc;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary, #6366f1);
+}
+
+.payment-receipt-summary {
+    margin-top: 0.85rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed #cbd5e1;
+}
+
+.invoice-calculation-box {
+    background: #f8fafc;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.calc-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.calc-row.total-highlight {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    border-top: 2px solid #cbd5e1;
+    padding-top: 0.65rem;
+    margin-top: 0.65rem;
+}
+
+.calc-row.balance-row {
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}
+
+.invoice-pay-summary-box {
+    background: #f1f5f9;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary, #6366f1);
+    font-size: 0.9rem;
+    display: grid;
+    gap: 0.35rem;
+}
+
+/* Revenue Bars Visualizer */
+.chart-bars-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 1.5rem;
+    height: 200px;
+    padding: 1.5rem 0.5rem 0.5rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.chart-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.chart-bar-value {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 0.35rem;
+}
+
+.chart-bar {
+    width: 100%;
+    max-width: 45px;
+    background: linear-gradient(180deg, #6366f1 0%, #4338ca 100%);
+    border-radius: 6px 6px 0 0;
+    transition: height 0.4s ease;
+}
+
+.chart-bar:hover {
+    background: linear-gradient(180deg, #818cf8 0%, #4f46e5 100%);
+}
+
+.chart-bar-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+    white-space: nowrap;
+}
+
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #print-area, #print-area * {
+        visibility: visible;
+    }
+    #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 2cm;
+    }
+    .no-print {
+        display: none !important;
+    }
+}

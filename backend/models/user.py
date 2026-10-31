@@ -5,6 +5,7 @@ Defines User, PasswordReset, and UserPermission entities.
 """
 
 from datetime import datetime, timezone
+from sqlalchemy.ext.hybrid import hybrid_property
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db
 
@@ -44,6 +45,14 @@ class User(db.Model):
     @property
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}".strip()
+
+    @hybrid_property
+    def name(self) -> str:
+        return f"{self.first_name} {self.last_name}".strip()
+
+    @name.expression
+    def name(cls):
+        return db.func.trim(cls.first_name + " " + cls.last_name)
 
     def to_dict(self, include_permissions: bool = False) -> dict:
         """Serializes user model to dictionary."""

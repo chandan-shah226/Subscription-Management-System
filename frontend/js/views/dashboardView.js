@@ -1,7 +1,7 @@
 /**
  * Dashboard View Component
  * ========================
- * Overview screen displaying metrics for active subscriptions, products, quotes, and quick actions.
+ * Executive overview screen for Admin/Staff and Self-Service Hub for Customers.
  */
 
 const DashboardView = {
@@ -9,33 +9,56 @@ const DashboardView = {
         const user = AuthManager.getUser();
         if (!user) return '';
 
-        // Fetch counts concurrently
-        const [subsRes, quotesRes, prodsRes] = await Promise.all([
+        const isCustomer = AuthManager.isCustomer();
+
+        // Fetch metrics concurrently
+        const [subsRes, quotesRes, invRes, payRes] = await Promise.all([
             ApiClient.get('/subscriptions'),
             ApiClient.get('/quotations'),
-            ApiClient.get('/products')
+            ApiClient.get('/invoices'),
+            ApiClient.get('/payments')
         ]);
 
         const subs = subsRes.success ? subsRes.data : [];
         const quotes = quotesRes.success ? quotesRes.data : [];
-        const prods = prodsRes.success ? prodsRes.data : [];
+        const invoices = invRes.success ? invRes.data : [];
+        const payments = payRes.success ? payRes.data : [];
 
         const activeSubsCount = subs.filter(s => s.status === 'active').length;
-        const pausedSubsCount = subs.filter(s => s.status === 'paused').length;
-        const draftQuotesCount = quotes.filter(q => q.status === 'draft' || q.status === 'sent').length;
-        const confirmedQuotesCount = quotes.filter(q => q.status === 'confirmed').length;
+        const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
+        const unpaidInvoices = invoices.filter(i => i.status !== 'paid' && i.status !== 'cancelled');
+        const outstandingDue = unpaidInvoices.reduce((sum, i) => sum + (i.outstanding_balance || i.total_amount), 0);
+        const overdueCount = unpaidInvoices.filter(i => i.is_overdue).length;
 
         return `
             <div class="dashboard-header">
                 <div>
-                    <h2>Welcome back, ${user.first_name || 'User'}!</h2>
-                    <p class="text-muted">Subscription Management System — Modules 1, 2 & 3 Dashboard</p>
+                    <h2>Welcome, ${user.first_name || 'User'}!</h2>
+                    <p class="text-muted">
+                        ${isCustomer 
+                            ? 'Brightloop Customer Self-Service Portal — Manage your subscriptions and invoices in one place' 
+                            : 'Brightloop Operations & Billing Executive Hub'}
+                    </p>
                 </div>
                 <div class="quick-actions">
-                    <a href="#/quotations" class="btn btn-primary" onclick="setTimeout(() => QuotationView.openCreateModal(), 100)">+ New Quotation</a>
-                    <a href="#/products" class="btn btn-secondary">Catalog</a>
+                    ${isCustomer ? `
+                        <a href="#/products" class="btn btn-primary">Browse Catalog & Plans</a>
+                        <a href="#/invoices" class="btn btn-secondary">My Invoices</a>
+                    ` : `
+                        <a href="#/quotations" class="btn btn-primary" onclick="setTimeout(() => QuotationView.openCreateModal(), 100)">+ New Quotation</a>
+                        <a href="#/invoices" class="btn btn-secondary">Invoicing & Billing</a>
+                        <a href="#/finance" class="btn btn-outline">Executive Finance Hub</a>
+                    `}
                 </div>
             </div>
+
+            <!-- Overdue Warning Banner if customer has unpaid invoices -->
+            ${isCustomer && overdueCount > 0 ? `
+                <div class="alert alert-danger" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <div><strong>⚠️ Payment Due:</strong> You have ${overdueCount} invoice(s) awaiting payment totaling <strong>$${outstandingDue.toFixed(2)}</strong>.</div>
+                    <a href="#/invoices" class="btn btn-sm btn-danger">Pay Now Online</a>
+                </div>
+            ` : ''}
 
             <!-- Stats Metric Grid -->
             <div class="stats-grid">
@@ -43,37 +66,40 @@ const DashboardView = {
                     <div class="stat-icon icon-blue">🔄</div>
                     <div class="stat-details">
                         <span class="stat-value">${activeSubsCount}</span>
-                        <span class="stat-label">Active Subscriptions</span>
+                        <span class="stat-label">${isCustomer ? 'My Active Subscriptions' : 'Active Subscriptions'}</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon icon-orange">⏸️</div>
+                    <div class="stat-icon icon-green">💵</div>
                     <div class="stat-details">
-                        <span class="stat-value">${pausedSubsCount}</span>
-                        <span class="stat-label">Paused Subscriptions</span>
+                        <span class="stat-value">$${totalRevenue.toFixed(2)}</span>
+                        <span class="stat-label">${isCustomer ? 'Total Paid to Date' : 'Total Revenue Collected'}</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon icon-green">📝</div>
+                    <div class="stat-icon icon-orange">⏳</div>
                     <div class="stat-details">
-                        <span class="stat-value">${draftQuotesCount}</span>
-                        <span class="stat-label">Pending / Draft Quotations</span>
+                        <span class="stat-value">$${outstandingDue.toFixed(2)}</span>
+                        <span class="stat-label">${isCustomer ? 'Current Balance Due' : 'Outstanding Receivables'}</span>
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon icon-purple">📦</div>
+                    <div class="stat-icon ${overdueCount > 0 ? 'icon-red' : 'icon-purple'}">
+                        ${overdueCount > 0 ? '🚨' : '📝'}
+                    </div>
                     <div class="stat-details">
-                        <span class="stat-value">${prods.length}</span>
-                        <span class="stat-label">Available Products</span>
+                        <span class="stat-value ${overdueCount > 0 ? 'text-danger' : ''}">${overdueCount > 0 ? overdueCount : quotes.length}</span>
+                        <span class="stat-label">${overdueCount > 0 ? 'Overdue Invoices' : isCustomer ? 'My Quotations' : 'Quotations Drafted'}</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Recent Subscriptions and Quotations Tables -->
+            <!-- Recent Subscriptions and Invoices Tables -->
             <div class="dashboard-sections-grid">
+                <!-- Recent Subscriptions -->
                 <div class="card">
                     <div class="card-header">
-                        <h3>Recent Subscriptions</h3>
+                        <h3>${isCustomer ? 'My Subscriptions' : 'Recent Subscriptions'}</h3>
                         <a href="#/subscriptions" class="text-sm">View All &rarr;</a>
                     </div>
                     <div class="card-body">
@@ -82,7 +108,7 @@ const DashboardView = {
                                 <thead>
                                     <tr>
                                         <th>Number</th>
-                                        <th>Customer</th>
+                                        ${!isCustomer ? '<th>Customer</th>' : ''}
                                         <th>Status</th>
                                         <th>Next Billing</th>
                                         <th>Amount</th>
@@ -92,7 +118,7 @@ const DashboardView = {
                                     ${subs.slice(0, 5).map(s => `
                                         <tr>
                                             <td><strong>${s.subscription_number}</strong></td>
-                                            <td>${s.customer_name || 'Customer'}</td>
+                                            ${!isCustomer ? `<td>${s.customer_name || 'Customer'}</td>` : ''}
                                             <td><span class="status-pill status-${s.status}">${s.status.toUpperCase()}</span></td>
                                             <td>${s.next_billing_date || 'N/A'}</td>
                                             <td>$${s.total_amount.toFixed(2)}</td>
@@ -104,29 +130,32 @@ const DashboardView = {
                     </div>
                 </div>
 
+                <!-- Recent Invoices -->
                 <div class="card">
                     <div class="card-header">
-                        <h3>Recent Quotations</h3>
-                        <a href="#/quotations" class="text-sm">View All &rarr;</a>
+                        <h3>${isCustomer ? 'My Recent Invoices' : 'Recent Invoices'}</h3>
+                        <a href="#/invoices" class="text-sm">View All &rarr;</a>
                     </div>
                     <div class="card-body">
-                        ${quotes.length === 0 ? '<p class="empty-state">No quotations found.</p>' : `
+                        ${invoices.length === 0 ? '<p class="empty-state">No invoices found.</p>' : `
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Number</th>
-                                        <th>Customer</th>
-                                        <th>Status</th>
+                                        <th>Invoice #</th>
+                                        ${!isCustomer ? '<th>Customer</th>' : ''}
+                                        <th>Due Date</th>
                                         <th>Total</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${quotes.slice(0, 5).map(q => `
+                                    ${invoices.slice(0, 5).map(inv => `
                                         <tr>
-                                            <td><strong>${q.quotation_number}</strong></td>
-                                            <td>${q.customer_name || 'Customer'}</td>
-                                            <td><span class="status-pill status-${q.status}">${q.status.toUpperCase()}</span></td>
-                                            <td>$${q.total_amount.toFixed(2)}</td>
+                                            <td><strong>${inv.invoice_number}</strong></td>
+                                            ${!isCustomer ? `<td>${inv.customer_name || 'Customer'}</td>` : ''}
+                                            <td>${inv.due_date}</td>
+                                            <td><strong>$${inv.total_amount.toFixed(2)}</strong></td>
+                                            <td><span class="status-pill ${inv.status === 'paid' ? 'status-active' : inv.is_overdue ? 'status-closed' : 'status-paused'}">${(inv.status || 'draft').toUpperCase()}</span></td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
@@ -140,4 +169,3 @@ const DashboardView = {
 };
 
 window.DashboardView = DashboardView;
-

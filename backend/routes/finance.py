@@ -2,7 +2,7 @@
 
 from flask import Blueprint, current_app, jsonify, request
 
-from ..services import finance_service as svc
+from services import finance_service as svc
 
 bp = Blueprint("finance", __name__, url_prefix="/api/finance")
 

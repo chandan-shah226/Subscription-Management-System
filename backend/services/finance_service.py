@@ -17,8 +17,7 @@ from typing import Any
 from sqlalchemy import func, or_
 from sqlalchemy.orm import joinedload
 
-from ..extensions import db
-from ..models import Customer, Invoice, Payment, Subscription
+from models import db, Customer, Invoice, Payment, Subscription
 
 SUCCESSFUL = "successful"
 INVOICE_STATUSES = {"draft", "confirmed", "paid"}

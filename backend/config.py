@@ -30,6 +30,11 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
+    # Pagination & Cache Configuration
+    DEFAULT_PER_PAGE = 20
+    MAX_PER_PAGE = 100
+    CACHE_TTL_SECONDS = 60
+
 
 class DevelopmentConfig(Config):
     """Configuration for local development."""

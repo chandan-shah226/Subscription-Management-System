@@ -5,8 +5,11 @@
  * error handling, and redirection on unauthenticated requests.
  */
 
-// Dynamically use current host if available, else default to 127.0.0.1
-let API_BASE_URL = 'http://127.0.0.1:5000/api';
+// Dynamically detect API host: prefer port 5001 (macOS AirPlay avoids 5000) or current host
+let API_BASE_URL = window.API_BASE_URL ||
+    (window.location.port === '5001' || window.location.port === '5000'
+        ? `${window.location.origin}/api`
+        : 'http://127.0.0.1:5001/api');
 
 class ApiClient {
     /**
@@ -60,11 +63,24 @@ class ApiClient {
             try {
                 response = await fetch(url, config);
             } catch (firstErr) {
-                // If 127.0.0.1 failed, try localhost as fallback (or vice versa)
-                const altHost = API_BASE_URL.includes('127.0.0.1') ? 'localhost' : '127.0.0.1';
-                const altBase = `http://${altHost}:5000/api`;
-                response = await fetch(`${altBase}${endpoint}`, config);
-                API_BASE_URL = altBase;
+                // Try candidate fallback endpoints (5001, 5000, localhost)
+                const candidateBases = [
+                    'http://127.0.0.1:5001/api',
+                    'http://localhost:5001/api',
+                    'http://127.0.0.1:5000/api',
+                    'http://localhost:5000/api'
+                ];
+                let connected = false;
+                for (const altBase of candidateBases) {
+                    if (altBase === API_BASE_URL) continue;
+                    try {
+                        response = await fetch(`${altBase}${endpoint}`, config);
+                        API_BASE_URL = altBase;
+                        connected = true;
+                        break;
+                    } catch (e) {}
+                }
+                if (!connected) throw firstErr;
             }
 
             const data = await response.json().catch(() => ({}));
