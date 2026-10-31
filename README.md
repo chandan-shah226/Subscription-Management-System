@@ -109,14 +109,6 @@ Payment Recording
 Financial Dashboard & Reports
 ```
 
-## Team Responsibilities
-
-| Role               | Responsibility                                                                        |
-| ------------------ | ------------------------------------------------------------------------------------- |
-| Backend Developer  | Database design, Flask APIs, business logic, authentication, billing and integrations |
-| Frontend Developer | User interface, dashboards, forms, tables and API integration                         |
-| Third Team Member  | Responsibilities to be finalized                                                      |
-
 ## Project Structure
 
 The project directory structure will be finalized as development progresses.
