@@ -1,53 +1,81 @@
 /**
- * Subscription Management System - Main Application Script
- * ========================================================
- * Pure Vanilla JavaScript entry point.
- * Provides a clean architecture for developers to mount module scripts
- * and interact with the backend REST API.
+ * Main Application Script (Frontend Entry Point)
+ * ==============================================
+ * Bootstraps the Vanilla JavaScript Single Page Application.
+ * Initializes authentication, client-side routing, and global toast notifications.
  */
-
-// Configuration constants
-const API_BASE_URL = 'http://127.0.0.1:5000/api';
 
 /**
- * Checks connectivity with the Flask backend health endpoint.
+ * Toast Notification System
+ * @param {string} message - Message text
+ * @param {'success'|'error'|'warning'|'info'} type - Toast theme
+ * @param {number} duration - Milliseconds before auto-dismiss
  */
-async function checkBackendHealth() {
-    const statusElement = document.getElementById('api-status');
-    if (!statusElement) return;
+window.showToast = (message, type = 'info', duration = 3500) => {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <span class="toast-message">${message}</span>
+        <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 400);
+    }, duration);
+};
+
+/**
+ * Verifies backend connectivity and updates status badge.
+ */
+async function checkBackendConnectivity() {
+    const statusEl = document.getElementById('api-status');
+    if (!statusEl) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/health`);
-        if (response.ok) {
-            const data = await response.json();
-            statusElement.textContent = `Online (${data.message || 'Ready'})`;
-            statusElement.className = 'status-indicator online';
+        const res = await ApiClient.get('/health');
+        if (res.status === 200 || res.success) {
+            statusEl.textContent = 'Backend Online (v1.0.0)';
+            statusEl.className = 'status-indicator online';
         } else {
-            statusElement.textContent = `Offline (HTTP ${response.status})`;
-            statusElement.className = 'status-indicator offline';
+            statusEl.textContent = 'Backend Offline';
+            statusEl.className = 'status-indicator offline';
         }
-    } catch (error) {
-        statusElement.textContent = 'Offline (Cannot connect to backend)';
-        statusElement.className = 'status-indicator offline';
+    } catch (e) {
+        statusEl.textContent = 'Backend Offline';
+        statusEl.className = 'status-indicator offline';
     }
 }
 
 /**
- * Main application initialization
+ * Application Initialization
  */
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Subscription Management System frontend initialized.');
-    
-    // Check backend connection on initial load
-    checkBackendHealth();
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Subscription Management System frontend starting up...');
 
-    // -------------------------------------------------------------------------
-    // Placeholder for Feature Modules:
-    // Independent developers can import or attach modules here:
-    // - Auth module (login / registration / token storage)
-    // - Products & Plans module
-    // - Quotations & Subscriptions module
-    // - Invoices & Payments module
-    // -------------------------------------------------------------------------
+    // 1. Initialize auth state
+    AuthManager.init();
+
+    // 2. Check backend connectivity
+    await checkBackendConnectivity();
+
+    // 3. If token present, fetch fresh user profile
+    if (ApiClient.getToken()) {
+        await AuthManager.fetchCurrentUser();
+    } else {
+        AuthManager.updateNavbar();
+    }
+
+    // 4. Initialize client-side router
+    Router.init();
 });
-

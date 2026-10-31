@@ -16,7 +16,7 @@ INSTANCE_DIR = BASE_DIR.parent / "instance"
 
 class Config:
     """Base configuration with shared default parameters."""
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
+    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-brightloop-subscription-system-2026-safe-32-bytes")
     
     # SQLite Database Configuration (default: instance/subscription_system.db)
     SQLALCHEMY_DATABASE_URI = os.environ.get(
@@ -26,7 +26,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Flask-JWT-Extended Configuration
-    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-jwt-secret-key-change-in-production")
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "dev-jwt-secret-key-brightloop-subscription-system-2026-safe-32-bytes")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 

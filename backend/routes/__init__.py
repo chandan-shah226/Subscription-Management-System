@@ -1,13 +1,21 @@
 """
 Routes Package
 ==============
-Houses API endpoints and Flask Blueprints.
-
-Developers can implement domain-specific blueprints in separate modules
-(e.g., auth_routes.py, product_routes.py, subscription_routes.py,
-invoice_routes.py, payment_routes.py) and register them within the
-application factory in app.py.
+Exports all API Blueprints for application factory registration.
 """
 
-# Placeholder for route registrations and blueprint exports
+from routes.auth_routes import auth_bp
+from routes.user_routes import user_bp
+from routes.product_routes import product_bp
+from routes.plan_routes import plan_bp
+from routes.quotation_routes import quotation_bp
+from routes.subscription_routes import subscription_bp
 
+__all__ = [
+    "auth_bp",
+    "user_bp",
+    "product_bp",
+    "plan_bp",
+    "quotation_bp",
+    "subscription_bp",
+]
