@@ -25,6 +25,7 @@ class Router {
     static init() {
         window.addEventListener('hashchange', () => this.handleRouting());
         window.addEventListener('load', () => this.handleRouting());
+        this.handleRouting();
     }
 
     static navigate(path) {

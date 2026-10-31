@@ -5,7 +5,8 @@
  * error handling, and redirection on unauthenticated requests.
  */
 
-const API_BASE_URL = 'http://127.0.0.1:5000/api';
+// Dynamically use current host if available, else default to 127.0.0.1
+let API_BASE_URL = 'http://127.0.0.1:5000/api';
 
 class ApiClient {
     /**
@@ -55,7 +56,17 @@ class ApiClient {
         };
 
         try {
-            const response = await fetch(url, config);
+            let response;
+            try {
+                response = await fetch(url, config);
+            } catch (firstErr) {
+                // If 127.0.0.1 failed, try localhost as fallback (or vice versa)
+                const altHost = API_BASE_URL.includes('127.0.0.1') ? 'localhost' : '127.0.0.1';
+                const altBase = `http://${altHost}:5000/api`;
+                response = await fetch(`${altBase}${endpoint}`, config);
+                API_BASE_URL = altBase;
+            }
+
             const data = await response.json().catch(() => ({}));
 
             if (response.status === 401) {
@@ -127,4 +138,3 @@ class ApiClient {
 
 // Attach to window for global access across vanilla JS modules
 window.ApiClient = ApiClient;
-

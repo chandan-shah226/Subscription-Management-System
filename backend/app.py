@@ -154,8 +154,8 @@ def create_app(config_name=None):
     app = Flask(__name__)
     app.config.from_object(config_by_name.get(config_name, config_by_name["default"]))
 
-    # Initialize extensions
-    CORS(app)
+    # Initialize extensions with CORS support
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     db.init_app(app)
     jwt = JWTManager(app)
 
@@ -216,4 +216,4 @@ def create_app(config_name=None):
 if __name__ == "__main__":
     app = create_app()
     seed_initial_data(app)
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
